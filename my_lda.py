@@ -9,24 +9,13 @@ import numpy as np
 
 def calc_theta(alpha, n_d, nd_sum):
     """文献中的Eq.82，计算参数theta"""
-    doc_num = len(n_d)
-    topic_alpha = topic_number * alpha  # 这一步为什么？没想明白
     theta = np.divide(n_d + alpha, nd_sum + alpha + 0.0)
-    # theta = [[0 for t in range(topic_number)] for d in range(doc_num)]
-    for m in range(doc_number):
-        for k in range(topic_number):
-            theta[m][k] = (n_d[m][k] + alpha) / (nd_sum[m] + topic_alpha)
     return theta
 
 
 def calc_phi(beta, n_t, nt_sum):
     """文献中的Eq.81，计算参数phi"""
-    term_num = len(n_t)
-    term_beta = term_num * beta  # 这一步为什么？没想明白
-    phi = [[0 for w in range(term_num)] for t in range(topic_number)]
-    for k in range(topic_number):
-        for term in range(term_num):
-            phi[k][term] = (n_t[term][k] + beta) / (nt_sum[k] + term_beta)
+    theta = np.divide(n_t + beta, nt_sum + beta + 0.0)
     return phi
 
 
