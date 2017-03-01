@@ -66,7 +66,10 @@ def lda(doc_num, topic_number, term_num, z_doc, n_t, n_d, nt_sum, nd_sum, dic, d
 
 def load_stopwords():
     """停止词十分重要，但是没有找到合适的词库，暂时为空。"""
-    return []
+    stop_words_file = codecs.open('data/stopword.txt', 'r', 'utf-8')
+    stop_words_set = set(stop_words_file.read().split(
+        '\r\n')) | set(['', '\r\n'])
+    return stop_words_set
 
 
 def read_document(doc_num, stop_words, dic):
@@ -77,7 +80,11 @@ def read_document(doc_num, stop_words, dic):
         current_file = codecs.open('data/doc%d.txt' % (i + 1), 'r', 'utf-8')
         all_the_text = current_file.read()
         seg_list = jieba.cut(all_the_text)
-        doc.append(list(seg_list))
+        temp_word_list = []
+        for word in seg_list:
+            if word not in stop_words:
+                temp_word_list.append(word)
+        doc.append(temp_word_list)
         dic_set = dic_set | set(doc[i])
     for i, word in enumerate(dic_set):
         dic[word] = i
@@ -106,6 +113,7 @@ def show_result(theta, phi, dic):
     """打印计算结果"""
     dic_now = dict((value, key) for key, value in dic.iteritems())
     for i in range(phi.shape[1]):
+        topic_keyword = dic_now[np.argmax(phi[:, i])]
         print 'topic%d:%s' % (i + 1, dic_now[np.argmax(phi[:, i])])
     for i in range(theta.shape[0]):
         distribution = [str(prob) for prob in theta[i, :]]
@@ -116,7 +124,7 @@ def main():
     """LDA主程序"""
     # 数据处理
     doc_num = 2  # 文档数
-    topic_number = 4  # 主题数
+    topic_number = 10  # 主题数
     dic = {}
     stop_words = load_stopwords()
     doc = read_document(doc_num, stop_words, dic)
