@@ -19,13 +19,13 @@ def random_topic(topic_number, distribution=None):
 
 def calc_theta(alpha, n_d, nd_sum):
     """文献中的Eq.82，计算参数theta。"""
-    theta = np.divide(n_d + alpha, nd_sum + alpha + 0.0)
+    theta = np.divide(n_d + alpha, nd_sum + alpha * n_d.shape[1] + 0.0)
     return theta
 
 
 def calc_phi(beta, n_t, nt_sum):
     """文献中的Eq.81，计算参数phi。"""
-    phi = np.divide(n_t + beta, nt_sum.T + beta + 0.0)
+    phi = np.divide(n_t + beta, nt_sum.T + beta * n_t.shape[0] + 0.0)
     return phi
 
 
@@ -68,7 +68,7 @@ def load_stopwords():
     """停止词十分重要，但是没有找到合适的词库，暂时为空。"""
     stop_words_file = codecs.open('data/stopword.txt', 'r', 'utf-8')
     stop_words_set = set(stop_words_file.read().split(
-        '\r\n')) | set(['', '\r\n'])
+        '\r\n')) | set(['', '\r\n', ' '])
     return stop_words_set
 
 
@@ -124,7 +124,7 @@ def main():
     """LDA主程序"""
     # 数据处理
     doc_num = 2  # 文档数
-    topic_number = 10  # 主题数
+    topic_number = 20  # 主题数
     dic = {}
     stop_words = load_stopwords()
     doc = read_document(doc_num, stop_words, dic)
