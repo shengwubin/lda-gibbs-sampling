@@ -42,7 +42,7 @@ def gibbs_sampling(alpha, beta, doc, dic, z_doc, n_t, n_d, nt_sum, nd_sum):
                 nt_sum[current_topic_number] -= 1
                 nd_sum[i] -= 1
                 p_sampling = (n_t[current_word_number, :] + beta) * \
-                    (n_d[i, :] + alpha) / (nt_sum.T + beta)
+                    (n_d[i, :] + alpha) / (nt_sum.T + beta * n_t.shape[0])
                 p_sampling_norm = p_sampling / np.sum(p_sampling)
                 current_topic_number = random_topic(
                     None, distribution=p_sampling_norm[0, :])
@@ -124,7 +124,7 @@ def main():
     """LDA主程序"""
     # 数据处理
     doc_num = 2  # 文档数
-    topic_number = 20  # 主题数
+    topic_number = 4  # 主题数
     dic = {}
     stop_words = load_stopwords()
     doc = read_document(doc_num, stop_words, dic)
